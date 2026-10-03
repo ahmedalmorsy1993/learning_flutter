@@ -1,4 +1,5 @@
-import 'package:first_app/pages/app_router.dart';
+import 'package:first_app/pages/aboutus.dart';
+import 'package:first_app/pages/home.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,6 +12,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(routerConfig: appRouter);
+    // return MaterialApp.router(routerConfig: appRouter);
+    return MaterialApp(
+      initialRoute: 'home',
+      routes: {
+        'home': (context) => HomePage(),
+        'about': (context) => Aboutus(),
+      },
+    );
   }
 }

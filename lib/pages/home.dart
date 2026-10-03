@@ -1,7 +1,6 @@
 import 'package:first_app/app_asset_image.dart';
-import 'package:first_app/customCard.dart';
+import 'package:first_app/custom_card.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class Employee {
   String firstName;
@@ -18,10 +17,10 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() =>  ();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class   extends State<HomePage> {
+class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> drawerStateKey = GlobalKey();
   String? _pendingPath;
   final List<Color> myColors = [
@@ -66,11 +65,11 @@ class   extends State<HomePage> {
   }
 
   final List<Map<String, dynamic>> links = [
-    {'title': 'Home', 'icon': Icons.home, 'path': '/home'},
+    {'title': 'Home', 'icon': Icons.home, 'path': 'home'},
     {
       'title': 'AboutUs',
       'icon': Icons.online_prediction_rounded,
-      'path': '/about',
+      'path': 'about',
     },
   ];
 
@@ -81,17 +80,17 @@ class   extends State<HomePage> {
       length: 3,
       child: Scaffold(
         key: drawerStateKey,
-        onDrawerChanged: (isOpened) {
-          if (isOpened) return;
-          final path = _pendingPath;
-          _pendingPath = null;
-          if (path == null || !mounted) return;
-          if (path == '/home') {
-            context.go(path);
-          } else {
-            context.push(path);
-          }
-        },
+        // onDrawerChanged: (isOpened) {
+        //   if (isOpened) return;
+        //   final path = _pendingPath;
+        //   _pendingPath = null;
+        //   if (path == null || !mounted) return;
+        //   if (path == '/home') {
+        //     context.go(path);
+        //   } else {
+        //     context.push(path);
+        //   }
+        // },
         bottomNavigationBar: BottomNavigationBar(
           items: [
             BottomNavigationBarItem(
@@ -156,8 +155,9 @@ class   extends State<HomePage> {
                         tileColor: Colors.blue,
                         textColor: Colors.white,
                         onTap: () {
-                          _pendingPath = item['path'] as String;
+                          String path = item['path'] as String;
                           drawerStateKey.currentState?.closeDrawer();
+                          Navigator.of(context).pushNamed(path);
                         },
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class Aboutus extends StatelessWidget {
   const Aboutus({super.key});
@@ -8,17 +7,17 @@ class Aboutus extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          tooltip: 'Back',
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.go('/home');
-            }
-          },
-        ),
+        // leading: IconButton(
+        //   tooltip: 'Back',
+        //   icon: const Icon(Icons.arrow_back),
+        //   onPressed: () {
+        //     if (context.canPop()) {
+        //       context.pop();
+        //     } else {
+        //       context.go('/home');
+        //     }
+        //   },
+        // ),
         title: const Text('About Us'),
       ),
       body: const Center(
