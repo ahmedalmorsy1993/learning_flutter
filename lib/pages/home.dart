@@ -1,14 +1,29 @@
 import 'package:first_app/app_asset_image.dart';
 import 'package:first_app/customCard.dart';
-import 'package:first_app/main.dart';
-import 'package:first_app/pages/aboutus.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-// ignore: must_be_immutable
-class HomePage extends StatelessWidget {
-  HomePage({super.key});
-  GlobalKey<ScaffoldState> drawerStateKey = GlobalKey();
-  static int clicks = 0;
+class Employee {
+  String firstName;
+  String lastName;
+  int age;
+  Employee({
+    required this.firstName,
+    required this.lastName,
+    required this.age,
+  });
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() =>  ();
+}
+
+class   extends State<HomePage> {
+  final GlobalKey<ScaffoldState> drawerStateKey = GlobalKey();
+  String? _pendingPath;
   final List<Color> myColors = [
     Colors.green,
     Colors.yellow,
@@ -50,239 +65,228 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  void _navigateTo(BuildContext context, Widget screen) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
-  }
-
   final List<Map<String, dynamic>> links = [
-    {'title': 'Home', 'icon': Icons.home, 'route': '/home'},
+    {'title': 'Home', 'icon': Icons.home, 'path': '/home'},
     {
       'title': 'AboutUs',
       'icon': Icons.online_prediction_rounded,
-      'screen': const Aboutus(),
+      'path': '/about',
     },
-    {'title': 'Profile', 'icon': Icons.account_balance, 'route': '/profile'},
   ];
 
   List<String> images = ['ai_me.jpeg', 'ai_me.jpeg', 'ai_me.jpeg'];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Home Page')),
-      body: DefaultTabController(
-        length: 3,
-
-        child: Scaffold(
-          key: drawerStateKey,
-          bottomNavigationBar: BottomNavigationBar(
-            items: [
-              BottomNavigationBarItem(
-                tooltip: "Home",
-                icon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                tooltip: "About",
-                semanticsLabel: 'test',
-                icon: Icon(Icons.production_quantity_limits),
-                label: 'About',
-              ),
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        key: drawerStateKey,
+        onDrawerChanged: (isOpened) {
+          if (isOpened) return;
+          final path = _pendingPath;
+          _pendingPath = null;
+          if (path == null || !mounted) return;
+          if (path == '/home') {
+            context.go(path);
+          } else {
+            context.push(path);
+          }
+        },
+        bottomNavigationBar: BottomNavigationBar(
+          items: [
+            BottomNavigationBarItem(
+              tooltip: "Home",
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              tooltip: "About",
+              semanticsLabel: 'test',
+              icon: Icon(Icons.production_quantity_limits),
+              label: 'About',
+            ),
+          ],
+        ),
+        appBar: AppBar(
+          title: const Text("my app"),
+          bottom: TabBar(
+            tabs: [
+              Tab(icon: Icon(Icons.home)),
+              Tab(icon: Icon(Icons.production_quantity_limits)),
+              Tab(icon: Icon(Icons.abc)),
             ],
           ),
-          appBar: AppBar(
-            title: const Text("my app"),
-            bottom: TabBar(
-              tabs: [
-                Tab(icon: Icon(Icons.home)),
-                Tab(icon: Icon(Icons.production_quantity_limits)),
-                Tab(icon: Icon(Icons.abc)),
+        ),
+        drawer: Drawer(
+          // backgroundColor: Colors.transparent,
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: ListView(
+              children: [
+                Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: AppAssetImage(
+                        name: 'ai_me.jpeg',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Expanded(
+                      child: ListTile(
+                        title: Text('ahmed ismail'),
+                        subtitle: Text('Full-stack engineer'),
+                      ),
+                    ),
+                  ],
+                ),
+                Divider(height: 30),
+                Column(
+                  spacing: 10,
+                  children: [
+                    ...links.map(
+                      (item) => ListTile(
+                        leading: Icon(
+                          item['icon'] as IconData,
+                          color: Colors.white,
+                        ),
+                        title: Text(item['title'] as String),
+                        tileColor: Colors.blue,
+                        textColor: Colors.white,
+                        onTap: () {
+                          _pendingPath = item['path'] as String;
+                          drawerStateKey.currentState?.closeDrawer();
+                        },
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
-          drawer: Drawer(
-            // backgroundColor: Colors.transparent,
-            child: Container(
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => drawerStateKey.currentState?.openDrawer(),
+          backgroundColor: Colors.blueAccent,
+          child: Icon(Icons.add),
+        ),
+        body: TabBarView(
+          children: [
+            Container(
               padding: EdgeInsets.all(10),
               child: ListView(
                 children: [
-                  Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: AppAssetImage(
-                          name: 'ai_me.jpeg',
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      Expanded(
-                        child: ListTile(
-                          title: Text('ahmed ismail'),
-                          subtitle: Text('Full-stack engineer'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Divider(height: 30),
                   Column(
-                    spacing: 10,
+                    spacing: 12,
                     children: [
-                      ...links.map(
-                        (item) => ListTile(
-                          leading: Icon(
-                            item['icon'] as IconData,
-                            color: Colors.white,
-                          ),
-                          title: Text(item['title'] as String),
-                          tileColor: Colors.blue,
-                          textColor: Colors.white,
-                          onTap: () {
-                            drawerStateKey.currentState?.closeDrawer();
-                            if (item['route'] == '/home') return;
-
-                            final screen = item['screen'] as Widget?;
-                            if (screen != null) {
-                              _navigateTo(context, screen);
-                            } else if (item['route'] == '/profile') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'صفحة Profile غير متاحة حاليًا',
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                      _styledContainer(
+                        child: Text(
+                          'First Example for Styling',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
+                      ),
+                      _styledContainer(
+                        child: Text(
+                          "First Example for Styling  welcome in my first app in flutter this is for dummy text for design and hope it will be good",
+                          // overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          strutStyle: StrutStyle(leading: .4),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      _styledContainer(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Row(
+                              children: [
+                                ...List.generate(
+                                  5,
+                                  (_) => const Icon(Icons.star),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              '170 reviews',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      _styledContainer(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            ...colsData.map(
+                              (item) => Column(
+                                spacing: 4,
+                                children: [
+                                  Icon(item['icon'] as IconData),
+                                  Text(
+                                    item['type'].toString().toUpperCase(),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    item['time'],
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      _styledContainer(child: PrimaryButton()),
+                      _styledContainer(child: Switcher()),
+                      _styledContainer(child: Radio()),
+                      _styledContainer(child: MyCheckbox()),
+                      _styledContainer(child: MyStack()),
+                      _styledContainer(child: CustomTextField()),
+                      CustomCard(
+                        title: 'welcome',
+                        description: 'this is a simple description',
+                        imageName: 'ai_me.jpeg',
+                      ),
+                      CustomCard(
+                        title: 'welcome',
+                        description: 'this is a simple description',
+                        imageName: 'ai_me.jpeg',
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => drawerStateKey.currentState?.openDrawer(),
-            backgroundColor: Colors.blueAccent,
-            child: Icon(Icons.add),
-          ),
-          body: TabBarView(
-            children: [
-              Container(
-                padding: EdgeInsets.all(10),
-                child: ListView(
-                  children: [
-                    Column(
-                      spacing: 12,
-                      children: [
-                        _styledContainer(
-                          child: Text(
-                            'First Example for Styling',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        _styledContainer(
-                          child: Text(
-                            "First Example for Styling  welcome in my first app in flutter this is for dummy text for design and hope it will be good",
-                            // overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            strutStyle: StrutStyle(leading: .4),
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        _styledContainer(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Row(
-                                children: [
-                                  ...List.generate(
-                                    5,
-                                    (_) => const Icon(Icons.star),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                '170 reviews',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        _styledContainer(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              ...colsData.map(
-                                (item) => Column(
-                                  spacing: 4,
-                                  children: [
-                                    Icon(item['icon'] as IconData),
-                                    Text(
-                                      item['type'].toString().toUpperCase(),
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      item['time'],
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        _styledContainer(child: PrimaryButton()),
-                        _styledContainer(child: Switcher()),
-                        _styledContainer(child: Radio()),
-                        _styledContainer(child: MyCheckbox()),
-                        _styledContainer(child: MyStack()),
-                        _styledContainer(child: CustomTextField()),
-                        CustomCard(
-                          title: 'welcome',
-                          description: 'this is a simple description',
-                          imageName: 'ai_me.jpeg',
-                        ),
-                        CustomCard(
-                          title: 'welcome',
-                          description: 'this is a simple description',
-                          imageName: 'ai_me.jpeg',
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              PageView.builder(
-                itemCount: images.length,
-                scrollDirection: Axis.vertical,
-                itemBuilder: (context, index) =>
-                    AppAssetImage(name: images[index], fit: BoxFit.cover),
-              ),
-              PageView.builder(
-                itemCount: images.length,
-                itemBuilder: (context, index) =>
-                    AppAssetImage(name: images[index], fit: BoxFit.cover),
-              ),
-            ],
-          ),
+            PageView.builder(
+              itemCount: images.length,
+              scrollDirection: Axis.vertical,
+              itemBuilder: (context, index) =>
+                  AppAssetImage(name: images[index], fit: BoxFit.cover),
+            ),
+            PageView.builder(
+              itemCount: images.length,
+              itemBuilder: (context, index) =>
+                  AppAssetImage(name: images[index], fit: BoxFit.cover),
+            ),
+          ],
         ),
       ),
     );
