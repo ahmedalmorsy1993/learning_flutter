@@ -1,5 +1,6 @@
 import 'package:first_app/app_asset_image.dart';
 import 'package:first_app/custom_card.dart';
+import 'package:first_app/nav_extensions.dart';
 import 'package:flutter/material.dart';
 
 class Employee {
@@ -22,7 +23,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> drawerStateKey = GlobalKey();
-  String? _pendingPath;
   final List<Color> myColors = [
     Colors.green,
     Colors.yellow,
@@ -80,17 +80,6 @@ class _HomePageState extends State<HomePage> {
       length: 3,
       child: Scaffold(
         key: drawerStateKey,
-        // onDrawerChanged: (isOpened) {
-        //   if (isOpened) return;
-        //   final path = _pendingPath;
-        //   _pendingPath = null;
-        //   if (path == null || !mounted) return;
-        //   if (path == '/home') {
-        //     context.go(path);
-        //   } else {
-        //     context.push(path);
-        //   }
-        // },
         bottomNavigationBar: BottomNavigationBar(
           items: [
             BottomNavigationBarItem(
@@ -155,9 +144,11 @@ class _HomePageState extends State<HomePage> {
                         tileColor: Colors.blue,
                         textColor: Colors.white,
                         onTap: () {
-                          String path = item['path'] as String;
+                          final path = item['path'] as String;
                           drawerStateKey.currentState?.closeDrawer();
-                          Navigator.of(context).pushNamed(path);
+                          // Home is already the root page; pushing it again stacks duplicates.
+                          if (path == 'home') return;
+                          context.push(path);
                         },
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
