@@ -7,9 +7,30 @@ class NewHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('New Home Page')),
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 6,
+          children: [
+            const Text(
+              'Gipsy',
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            ),
+            const Text(
+              'Bee',
+              style: TextStyle(
+                fontSize: 25,
+
+                fontWeight: FontWeight.bold,
+                color: Colors.deepOrangeAccent,
+              ),
+            ),
+          ],
+        ),
+        centerTitle: true,
+      ),
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         children: [
           Row(
             spacing: 20,

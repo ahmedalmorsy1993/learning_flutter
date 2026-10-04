@@ -8,13 +8,9 @@ class SearchInput extends StatefulWidget {
 }
 
 class _SearchInputState extends State<SearchInput> {
-  static const _border = OutlineInputBorder(
-    borderRadius: BorderRadius.all(Radius.circular(8)),
-    borderSide: BorderSide(color: Colors.grey, width: 0),
-  );
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       style: const TextStyle(fontSize: 15),
       decoration: InputDecoration(
         hintText: 'Search',
@@ -22,9 +18,11 @@ class _SearchInputState extends State<SearchInput> {
         prefixIcon: const Icon(Icons.search),
         prefixIconColor: Colors.blueGrey,
         filled: true,
-        fillColor: Colors.grey[300],
-        enabledBorder: _border,
-        focusedBorder: _border,
+        fillColor: Colors.grey[200],
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderSide: BorderSide.none,
+        ),
       ),
     );
   }
