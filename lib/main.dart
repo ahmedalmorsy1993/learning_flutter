@@ -1,5 +1,5 @@
 import 'package:first_app/pages/aboutus.dart';
-import 'package:first_app/pages/home_page.dart';
+import 'package:first_app/pages/main_shell.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       initialRoute: 'home',
       debugShowCheckedModeBanner: false,
       routes: {
-        'home': (context) => NewHomePage(),
+        'home': (context) => const MainShell(),
         'about': (context) => Aboutus(),
       },
     );
