@@ -37,6 +37,7 @@ class _MainShellState extends State<MainShell> {
       // IndexedStack keeps each tab alive, so scroll position and state survive tab switches.
       body: IndexedStack(index: _index, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
+        landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
         currentIndex: _index,
         onTap: (i) => setState(() => _index = i),
         selectedItemColor: Colors.deepOrange,
