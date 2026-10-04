@@ -2,7 +2,7 @@ import 'package:first_app/pages/aboutus.dart';
 import 'package:first_app/pages/home_page.dart';
 import 'package:flutter/material.dart';
 
-/// Root screen with a bottom NavigationBar that switches between tabs.
+/// Root screen with a BottomNavigationBar that switches between tabs.
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
 
@@ -20,19 +20,60 @@ class _MainShellState extends State<MainShell> {
     return Scaffold(
       // IndexedStack keeps each tab alive, so scroll position and state survive tab switches.
       body: IndexedStack(index: _index, children: _pages),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _index,
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-        onDestinationSelected: (i) => setState(() => _index = i),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-          NavigationDestination(
-            icon: Icon(Icons.shopping_bag_outlined),
-            label: 'About Us',
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _index,
+        onTap: (i) => setState(() => _index = i),
+        selectedItemColor: Colors.deepOrange,
+        unselectedItemColor: Colors.grey,
+        iconSize: 30,
+        // Labels are hidden but still read by screen readers and shown as tooltips.
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        items: const [
+          BottomNavigationBarItem(
+            icon: _DotIcon(Icons.home),
+            activeIcon: _DotIcon(Icons.home, active: true),
+            label: 'Home',
           ),
-          NavigationDestination(icon: Icon(Icons.info), label: 'About Us'),
+          BottomNavigationBarItem(
+            icon: _DotIcon(Icons.info),
+            activeIcon: _DotIcon(Icons.info, active: true),
+            label: 'About',
+          ),
+          BottomNavigationBarItem(
+            icon: _DotIcon(Icons.settings),
+            activeIcon: _DotIcon(Icons.settings, active: true),
+            label: 'Settings',
+          ),
         ],
       ),
+    );
+  }
+}
+
+/// Nav icon with a small dot underneath in place of the text label.
+class _DotIcon extends StatelessWidget {
+  final IconData icon;
+  final bool active;
+
+  const _DotIcon(this.icon, {this.active = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      spacing: 4,
+      children: [
+        Icon(icon),
+        Container(
+          width: 6,
+          height: 6,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: active ? Colors.deepOrange : Colors.grey.shade300,
+          ),
+        ),
+      ],
     );
   }
 }
