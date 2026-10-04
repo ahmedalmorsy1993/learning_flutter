@@ -11,7 +11,7 @@ class CategoryItem {
 /// The parent owns the selection: pass [selectedIndex] and update it in [onSelected].
 class CategoryList extends StatelessWidget {
   final List<CategoryItem> items;
-  final int selectedIndex;
+  final int? selectedIndex;
   final ValueChanged<int> onSelected;
   final Color activeColor;
   final double size;

@@ -20,7 +20,12 @@ class _NewHomePageState extends State<NewHomePage> {
     CategoryItem(label: 'Hobbies', icon: Icons.sports_esports),
     CategoryItem(label: 'Hobbies', icon: Icons.sports_esports),
   ];
-  int _selected = 0;
+  int? _selected;
+  void _onSelected(int i) {
+    setState(() {
+      _selected = _selected == i ? null : i;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +74,7 @@ class _NewHomePageState extends State<NewHomePage> {
           CategoryList(
             items: _categories,
             selectedIndex: _selected,
-            onSelected: (i) => setState(() => _selected = i),
+            onSelected: (i) => _onSelected(i),
           ),
         ],
       ),
