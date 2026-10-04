@@ -1,8 +1,26 @@
+import 'package:first_app/components/category_list.dart';
 import 'package:first_app/components/search_input.dart';
 import 'package:flutter/material.dart';
 
-class NewHomePage extends StatelessWidget {
+class NewHomePage extends StatefulWidget {
   const NewHomePage({super.key});
+
+  @override
+  State<NewHomePage> createState() => _NewHomePageState();
+}
+
+class _NewHomePageState extends State<NewHomePage> {
+  static const _categories = [
+    CategoryItem(label: 'Men', icon: Icons.man),
+    CategoryItem(label: 'Women', icon: Icons.woman),
+    CategoryItem(label: 'Electrical', icon: Icons.electrical_services),
+    CategoryItem(label: 'Hobbies', icon: Icons.sports_esports),
+    CategoryItem(label: 'Hobbies', icon: Icons.sports_esports),
+    CategoryItem(label: 'Hobbies', icon: Icons.sports_esports),
+    CategoryItem(label: 'Hobbies', icon: Icons.sports_esports),
+    CategoryItem(label: 'Hobbies', icon: Icons.sports_esports),
+  ];
+  int _selected = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +59,17 @@ class NewHomePage extends StatelessWidget {
                 icon: const Icon(Icons.menu, size: 30),
               ),
             ],
+          ),
+          SizedBox(height: 20),
+          Text(
+            'Categories',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 20),
+          CategoryList(
+            items: _categories,
+            selectedIndex: _selected,
+            onSelected: (i) => setState(() => _selected = i),
           ),
         ],
       ),
