@@ -1,4 +1,5 @@
 import 'package:first_app/components/category_list.dart';
+import 'package:first_app/components/products.dart';
 import 'package:first_app/components/search_input.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,32 @@ class _NewHomePageState extends State<NewHomePage> {
     CategoryItem(label: 'Hobbies', icon: Icons.sports_esports),
     CategoryItem(label: 'Hobbies', icon: Icons.sports_esports),
     CategoryItem(label: 'Hobbies', icon: Icons.sports_esports),
+  ];
+  static const products = [
+    Product(
+      name: 'Logitech G 231',
+      description: 'Bluetooth Headphone',
+      icon: Icons.headphones,
+      price: 359,
+    ),
+    Product(
+      name: 'Apple Watch S4',
+      description: 'Smart Watch',
+      icon: Icons.watch,
+      price: 899,
+    ),
+    Product(
+      name: 'Sony WH-1000XM5',
+      description: 'Noise Cancelling Headphone',
+      icon: Icons.headset,
+      price: 399,
+    ),
+    Product(
+      name: 'Galaxy Watch 6',
+      description: 'Smart Watch',
+      icon: Icons.watch_outlined,
+      price: 299,
+    ),
   ];
   int? _selected;
   void _onSelected(int i) {
@@ -76,6 +103,13 @@ class _NewHomePageState extends State<NewHomePage> {
             selectedIndex: _selected,
             onSelected: (i) => _onSelected(i),
           ),
+          SizedBox(height: 20),
+          Text(
+            'Best Selling',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 20),
+          Products(products: products),
         ],
       ),
     );
