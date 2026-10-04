@@ -1,5 +1,5 @@
 import 'package:first_app/pages/aboutus.dart';
-import 'package:first_app/pages/home.dart';
+import 'package:first_app/pages/home_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,8 +15,9 @@ class MyApp extends StatelessWidget {
     // return MaterialApp.router(routerConfig: appRouter);
     return MaterialApp(
       initialRoute: 'home',
+      debugShowCheckedModeBanner: false,
       routes: {
-        'home': (context) => HomePage(),
+        'home': (context) => NewHomePage(),
         'about': (context) => Aboutus(),
       },
     );
