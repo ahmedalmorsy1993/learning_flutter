@@ -14,7 +14,23 @@ class _MainShellState extends State<MainShell> {
   int _index = 0;
 
   static const _pages = [NewHomePage(), Aboutus(), Aboutus()];
-
+  static const _navigationItems = [
+    BottomNavigationBarItem(
+      icon: _DotIcon(Icons.home),
+      activeIcon: _DotIcon(Icons.home, active: true),
+      label: 'Home',
+    ),
+    BottomNavigationBarItem(
+      icon: _DotIcon(Icons.info),
+      activeIcon: _DotIcon(Icons.info, active: true),
+      label: 'About',
+    ),
+    BottomNavigationBarItem(
+      icon: _DotIcon(Icons.settings),
+      activeIcon: _DotIcon(Icons.settings, active: true),
+      label: 'Settings',
+    ),
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,23 +45,7 @@ class _MainShellState extends State<MainShell> {
         // Labels are hidden but still read by screen readers and shown as tooltips.
         showSelectedLabels: false,
         showUnselectedLabels: false,
-        items: const [
-          BottomNavigationBarItem(
-            icon: _DotIcon(Icons.home),
-            activeIcon: _DotIcon(Icons.home, active: true),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: _DotIcon(Icons.info),
-            activeIcon: _DotIcon(Icons.info, active: true),
-            label: 'About',
-          ),
-          BottomNavigationBarItem(
-            icon: _DotIcon(Icons.settings),
-            activeIcon: _DotIcon(Icons.settings, active: true),
-            label: 'Settings',
-          ),
-        ],
+        items: _navigationItems,
       ),
     );
   }
