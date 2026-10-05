@@ -1,3 +1,4 @@
+import 'package:first_app/pages/product_details.dart';
 import 'package:flutter/material.dart';
 
 class Product {
@@ -47,46 +48,53 @@ class _ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(4),
+    return InkWell(
+      borderRadius: BorderRadius.circular(4),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => ProductDetails(product: product)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: product.image != null
+                  ? Image.asset(product.image!, fit: BoxFit.contain)
+                  : Icon(product.icon, size: 72, color: Colors.black87),
             ),
-            child: product.image != null
-                ? Image.asset(product.image!, fit: BoxFit.contain)
-                : Icon(product.icon, size: 72, color: Colors.black87),
           ),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          product.name,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          product.description,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 11, color: Colors.grey[500]),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          '\$${product.price.toStringAsFixed(product.price % 1 == 0 ? 0 : 2)}',
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-            color: Colors.deepOrangeAccent,
+          const SizedBox(height: 10),
+          Text(
+            product.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
           ),
-        ),
-      ],
+          const SizedBox(height: 2),
+          Text(
+            product.description,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 11, color: Colors.grey[500]),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            '\$${product.price.toStringAsFixed(product.price % 1 == 0 ? 0 : 2)}',
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Colors.deepOrangeAccent,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
