@@ -10,12 +10,16 @@ class Product {
   /// Optional asset path (e.g. 'images/headphone.png'). Falls back to [icon].
   final String? image;
 
+  /// Icons shown in the details page carousel. Falls back to [icon].
+  final List<IconData> gallery;
+
   const Product({
     required this.name,
     required this.description,
     required this.icon,
     required this.price,
     this.image,
+    this.gallery = const [],
   });
 }
 

@@ -27,24 +27,28 @@ class _NewHomePageState extends State<NewHomePage> {
       description: 'Bluetooth Headphone',
       icon: Icons.headphones,
       price: 359,
+      gallery: [Icons.headphones, Icons.headset_mic, Icons.bluetooth_audio],
     ),
     Product(
       name: 'Apple Watch S4',
       description: 'Smart Watch',
       icon: Icons.watch,
       price: 899,
+      gallery: [Icons.watch, Icons.access_time, Icons.favorite],
     ),
     Product(
       name: 'Sony WH-1000XM5',
       description: 'Noise Cancelling Headphone',
       icon: Icons.headset,
       price: 399,
+      gallery: [Icons.headset, Icons.noise_control_off, Icons.battery_full],
     ),
     Product(
       name: 'Galaxy Watch 6',
       description: 'Smart Watch',
       icon: Icons.watch_outlined,
       price: 299,
+      gallery: [Icons.watch_outlined, Icons.directions_run, Icons.timer],
     ),
   ];
   int? _selected;
