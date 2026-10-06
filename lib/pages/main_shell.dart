@@ -30,7 +30,19 @@ class MainShell extends StatelessWidget {
     final tab = _tabs[index];
 
     return Scaffold(
-      appBar: AppBar(title: tab.title ?? Text(tab.label), centerTitle: true),
+      appBar: AppBar(
+        title: tab.title ?? Text(tab.label),
+        centerTitle: true,
+        actions: [
+          PopupMenuButton(
+            onSelected: (value) => print(value),
+            itemBuilder: (context) => [
+              PopupMenuItem(value: 'first Value', child: Text('First')),
+              PopupMenuItem(value: 'second Value', child: Text('second')),
+            ],
+          ),
+        ],
+      ),
       body: child,
       bottomNavigationBar: BottomNavigationBar(
         landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
