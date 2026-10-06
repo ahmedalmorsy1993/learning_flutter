@@ -1,27 +1,18 @@
-import 'package:first_app/pages/aboutus.dart';
-import 'package:first_app/pages/main_shell.dart';
-import 'package:first_app/pages/settings.dart';
+import 'package:first_app/router.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
-// ignore: must_be_immutable
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // return MaterialApp.router(routerConfig: appRouter);
-    return MaterialApp(
-      initialRoute: 'home',
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      routes: {
-        'home': (context) => const MainShell(),
-        'about': (context) => Aboutus(),
-        'settings': (context) => Settings(),
-      },
+      routerConfig: appRouter,
     );
   }
 }

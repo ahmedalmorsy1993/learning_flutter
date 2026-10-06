@@ -1,5 +1,5 @@
-import 'package:first_app/pages/product_details.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class Product {
   final String name;
@@ -54,10 +54,7 @@ class _ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(4),
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => ProductDetails(product: product)),
-      ),
+      onTap: () => context.push('/product', extra: product),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

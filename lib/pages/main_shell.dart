@@ -1,54 +1,81 @@
-import 'package:first_app/pages/aboutus.dart';
-import 'package:first_app/pages/home_page.dart';
-import 'package:first_app/pages/settings.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-/// Root screen with a BottomNavigationBar that switches between tabs.
-class MainShell extends StatefulWidget {
-  const MainShell({super.key});
+class _Tab {
+  final String path;
+  final IconData icon;
+  final String label;
+  final Widget? title;
 
-  @override
-  State<MainShell> createState() => _MainShellState();
+  const _Tab(this.path, this.icon, this.label, [this.title]);
 }
 
-class _MainShellState extends State<MainShell> {
-  int _index = 0;
+/// Parent layout: owns the AppBar and BottomNavigationBar, the matched
+/// child page is rendered in the body. Pages are built/disposed on navigation.
+class MainShell extends StatelessWidget {
+  final String location;
+  final Widget child;
 
-  static const _pages = [NewHomePage(), Aboutus(), Settings()];
-  static const _navigationItems = [
-    BottomNavigationBarItem(
-      icon: _DotIcon(Icons.home),
-      activeIcon: _DotIcon(Icons.home, active: true),
-      label: 'Home',
-    ),
-    BottomNavigationBarItem(
-      icon: _DotIcon(Icons.info),
-      activeIcon: _DotIcon(Icons.info, active: true),
-      label: 'About',
-    ),
-    BottomNavigationBarItem(
-      icon: _DotIcon(Icons.settings),
-      activeIcon: _DotIcon(Icons.settings, active: true),
-      label: 'Settings',
-    ),
+  const MainShell({super.key, required this.location, required this.child});
+
+  static const _tabs = [
+    _Tab('/', Icons.home, 'Home', _Logo()),
+    _Tab('/about', Icons.info, 'About Us'),
+    _Tab('/settings', Icons.settings, 'Settings'),
   ];
+
   @override
   Widget build(BuildContext context) {
+    final index = _tabs.indexWhere((t) => t.path == location).clamp(0, 2);
+    final tab = _tabs[index];
+
     return Scaffold(
-      // IndexedStack keeps each tab alive, so scroll position and state survive tab switches.
-      body: IndexedStack(index: _index, children: _pages),
+      appBar: AppBar(title: tab.title ?? Text(tab.label), centerTitle: true),
+      body: child,
       bottomNavigationBar: BottomNavigationBar(
         landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
-        currentIndex: _index,
-        onTap: (i) => setState(() => _index = i),
+        currentIndex: index,
+        onTap: (i) => context.go(_tabs[i].path),
         selectedItemColor: Colors.deepOrange,
         unselectedItemColor: Colors.grey,
         iconSize: 30,
         // Labels are hidden but still read by screen readers and shown as tooltips.
         showSelectedLabels: false,
         showUnselectedLabels: false,
-        items: _navigationItems,
+        items: [
+          for (final (i, t) in _tabs.indexed)
+            BottomNavigationBarItem(
+              icon: _DotIcon(t.icon, active: i == index),
+              label: t.label,
+            ),
+        ],
       ),
+    );
+  }
+}
+
+class _Logo extends StatelessWidget {
+  const _Logo();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing: 6,
+      children: [
+        Text(
+          'Gipsy',
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          'Bee',
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            color: Colors.deepOrangeAccent,
+          ),
+        ),
+      ],
     );
   }
 }

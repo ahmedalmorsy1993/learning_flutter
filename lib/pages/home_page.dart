@@ -60,62 +60,38 @@ class _NewHomePageState extends State<NewHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 6,
+    return ListView(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      children: [
+        Row(
+          spacing: 20,
           children: [
-            const Text(
-              'Gipsy',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-            ),
-            const Text(
-              'Bee',
-              style: TextStyle(
-                fontSize: 25,
-
-                fontWeight: FontWeight.bold,
-                color: Colors.deepOrangeAccent,
-              ),
+            Expanded(child: SearchInput()),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.menu, size: 30),
             ),
           ],
         ),
-        centerTitle: true,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        children: [
-          Row(
-            spacing: 20,
-            children: [
-              Expanded(child: SearchInput()),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.menu, size: 30),
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
-          Text(
-            'Categories',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 20),
-          CategoryList(
-            items: _categories,
-            selectedIndex: _selected,
-            onSelected: (i) => _onSelected(i),
-          ),
-          SizedBox(height: 20),
-          Text(
-            'Best Selling',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 20),
-          Products(products: products),
-        ],
-      ),
+        SizedBox(height: 20),
+        Text(
+          'Categories',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 20),
+        CategoryList(
+          items: _categories,
+          selectedIndex: _selected,
+          onSelected: (i) => _onSelected(i),
+        ),
+        SizedBox(height: 20),
+        Text(
+          'Best Selling',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 20),
+        Products(products: products),
+      ],
     );
   }
 }
