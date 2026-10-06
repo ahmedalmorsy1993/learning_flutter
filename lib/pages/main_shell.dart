@@ -1,5 +1,6 @@
 import 'package:first_app/pages/aboutus.dart';
 import 'package:first_app/pages/home_page.dart';
+import 'package:first_app/pages/settings.dart';
 import 'package:flutter/material.dart';
 
 /// Root screen with a BottomNavigationBar that switches between tabs.
@@ -13,7 +14,7 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   int _index = 0;
 
-  static const _pages = [NewHomePage(), Aboutus(), Aboutus()];
+  static const _pages = [NewHomePage(), Aboutus(), Settings()];
   static const _navigationItems = [
     BottomNavigationBarItem(
       icon: _DotIcon(Icons.home),
