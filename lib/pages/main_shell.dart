@@ -41,6 +41,12 @@ class MainShell extends StatelessWidget {
               PopupMenuItem(value: 'second Value', child: Text('second')),
             ],
           ),
+          IconButton(
+            onPressed: () => {
+              showSearch(context: context, delegate: _CustomSearch()),
+            },
+            icon: Icon(Icons.search, size: 30),
+          ),
         ],
       ),
       body: child,
@@ -115,6 +121,58 @@ class _DotIcon extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _CustomSearch extends SearchDelegate {
+  final List<String> _names = ['ahmed', 'ismail', 'almorsy', "ali"];
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(onPressed: () => super.query = '', icon: Icon(Icons.close)),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+      onPressed: () => super.close(context, null),
+      icon: Icon(Icons.arrow_back),
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return Text(super.query);
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    List<String> matched = _names
+        .where((element) => element.contains(super.query.trim()))
+        .toList();
+    return Padding(
+      padding: EdgeInsetsGeometry.all(10),
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: matched.length,
+        itemBuilder: (context, i) => TextButton(
+          style: ButtonStyle(
+            alignment: Alignment.topLeft,
+            elevation: WidgetStatePropertyAll(2),
+            // backgroundColor: WidgetStatePropertyAll(Colors.grey.shade200),
+            backgroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.pressed)) return Colors.black45;
+              if (states.contains(WidgetState.disabled)) return Colors.grey;
+              return Colors.grey.shade200;
+            }),
+          ),
+
+          onPressed: () => super.query = matched[i],
+          child: Text(matched[i]),
+        ),
+      ),
     );
   }
 }
