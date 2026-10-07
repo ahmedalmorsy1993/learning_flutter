@@ -144,13 +144,16 @@ class _CustomSearch extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return Text(super.query);
+    return Text("results ${super.query}");
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     List<String> matched = _names
-        .where((element) => element.contains(super.query.trim()))
+        .where(
+          (element) =>
+              element.toLowerCase().contains(super.query.trim().toLowerCase()),
+        )
         .toList();
     return Padding(
       padding: EdgeInsetsGeometry.all(10),
@@ -169,7 +172,7 @@ class _CustomSearch extends SearchDelegate {
             }),
           ),
 
-          onPressed: () => super.query = matched[i],
+          onPressed: () => super.showResults(context),
           child: Text(matched[i]),
         ),
       ),
