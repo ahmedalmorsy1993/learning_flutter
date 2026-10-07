@@ -17,7 +17,6 @@ class _Settings extends State<Settings> {
 
   @override
   void dispose() {
-    print('settings dispose');
     _listViewController.dispose();
     super.dispose();
   }
