@@ -1,6 +1,7 @@
 import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:first_app/components/app_text_field.dart';
+import 'package:first_app/components/custom_dropdown_list.dart';
 import 'package:flutter/material.dart';
 
 class Aboutus extends StatefulWidget {
@@ -14,6 +15,7 @@ class _AboutusState extends State<Aboutus> {
   final _nameController = TextEditingController();
   final _cityController = TextEditingController();
   final _languageController = TextEditingController();
+  final _namesController = TextEditingController();
 
   final _cities = ['Cairo', 'Alexandria', 'Giza', 'Dubai', 'London', 'Paris'];
   final _languages = ['Arabic', 'English', 'French', 'German', 'Spanish'];
@@ -55,6 +57,12 @@ class _AboutusState extends State<Aboutus> {
     return ListView(
       padding: const EdgeInsets.all(12),
       children: [
+        CustomDropdownList(
+          textEditingController: _namesController,
+          title: 'Names',
+          items: const ['Ahmed', 'Sara', 'Omar', 'Mona'],
+          inputDecoration: const InputDecoration(hintText: 'choose name'),
+        ),
         AppTextField(
           textEditingController: _nameController,
           title: 'Name',
