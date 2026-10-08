@@ -1,127 +1,105 @@
-import 'package:first_app/pages/api.dart';
+import 'package:first_app/core/dependencies.dart';
+import 'package:first_app/features/blogs/data/blog.dart';
+import 'package:first_app/features/blogs/data/blog_repository.dart';
+import 'package:first_app/features/blogs/presentation/blogs_controller.dart';
 import 'package:flutter/material.dart';
 
-class Blog {
-  final int userId;
-  final int id;
-  final String title;
-  final String body;
-
-  Blog({
-    required this.userId,
-    required this.id,
-    required this.title,
-    required this.body,
-  });
-
-  factory Blog.fromJson(Map<String, dynamic> json) => Blog(
-    userId: json['userId'],
-    id: json['id'],
-    title: json['title'],
-    body: json['body'],
-  );
-}
-
 class Settings extends StatefulWidget {
-  const Settings({super.key});
+  /// [repository] is optional so tests can inject a fake;
+  /// the app uses the real one from `dependencies.dart`.
+  const Settings({super.key, this.repository});
+
+  final BlogRepository? repository;
+
   @override
-  State<Settings> createState() => _Settings();
+  State<Settings> createState() => _SettingsState();
 }
 
-class _Settings extends State<Settings> {
-  List<Blog> blogs = [];
-  bool loading = true;
-  String? error;
-  final _listViewController = ScrollController();
-  // `late` with an initializer runs getBlogs() once, on first use in build().
-  // late Future<List<Blog>> _blogsFuture = getBlogs();
+class _SettingsState extends State<Settings> {
+  late final _controller = BlogsController(
+    widget.repository ?? blogRepository,
+  )..load();
 
   @override
   void dispose() {
-    _listViewController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
-  Future<List<Blog>> getBlogs() async {
-    final res = await http.get<List<dynamic>>('/posts');
-    return res.data!.map((e) => Blog.fromJson(e)).toList();
+  // The widget only maps state -> UI. No HTTP, no try/catch, no business logic.
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: _controller,
+      builder: (context, _) => switch (_controller.state) {
+        BlogsLoading() => const Center(child: CircularProgressIndicator()),
+        BlogsError(:final message) => _ErrorView(
+          message: message,
+          onRetry: _controller.load,
+        ),
+        BlogsLoaded(:final blogs) when blogs.isEmpty => const Center(
+          child: Text('No posts yet.'),
+        ),
+        BlogsLoaded(:final blogs) => RefreshIndicator(
+          onRefresh: _controller.refresh,
+          child: ListView.builder(
+            itemCount: blogs.length,
+            itemBuilder: (context, index) => _BlogTile(blog: blogs[index]),
+          ),
+        ),
+      },
+    );
   }
+}
 
-  // Future<void> getData() async {
-  //   setState(() {
-  //     loading = true;
-  //     error = null;
-  //   });
-  //   try {
-  //     final response = await http.get<List<dynamic>>('/posts');
-  //     final list = response.data!.map((e) => Blog.fromJson(e)).toList();
-  //     if (!mounted) return;
-  //     setState(() => blogs = list);
-  //   } on DioException catch (e) {
-  //     if (!mounted) return;
-  //     setState(() => error = e.message ?? 'Network error');
-  //   } finally {
-  //     if (mounted) setState(() => loading = false);
-  //   }
-  // }
+// Small private widgets instead of helper methods: Flutter can rebuild
+// them independently, and `const` constructors let it skip rebuilds.
 
-  // The list is built lazily, so maxScrollExtent is only an estimate until the
-  // end is laid out: animate close to the end, then jump until it stops growing.
-  // Future<void> _scrollToBottom() async {
-  //   final c = _listViewController;
-  //   await c.animateTo(
-  //     c.position.maxScrollExtent,
-  //     duration: const Duration(seconds: 1),
-  //     curve: Curves.easeOut,
-  //   );
-  //   while (c.hasClients && c.position.pixels < c.position.maxScrollExtent) {
-  //     c.jumpTo(c.position.maxScrollExtent);
-  //     await WidgetsBinding.instance.endOfFrame;
-  //   }
-  // }
+class _BlogTile extends StatelessWidget {
+  const _BlogTile({required this.blog});
+
+  final Blog blog;
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Blog>>(
-      future: getBlogs(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('Failed to load: ${snapshot.error}'),
-                TextButton(
-                  onPressed: () => getBlogs(),
-                  child: const Text('Retry'),
-                ),
-              ],
-            ),
-          );
-        }
-        final blogs = snapshot.data!;
-        return ListView.builder(
-          controller: _listViewController,
-          itemCount: blogs.length,
-          itemBuilder: (context, index) => Card(
-            child: ListTile(
-              minLeadingWidth: 2,
-              title: Text(
-                blogs[index].title,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              subtitle: Text(
-                blogs[index].body,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-        );
-      },
+    return Card(
+      child: ListTile(
+        title: Text(
+          blog.title,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          blog.body,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+    );
+  }
+}
+
+class _ErrorView extends StatelessWidget {
+  const _ErrorView({required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.wifi_off, size: 48),
+            const SizedBox(height: 12),
+            Text(message, textAlign: TextAlign.center),
+            const SizedBox(height: 12),
+            FilledButton(onPressed: onRetry, child: const Text('Retry')),
+          ],
+        ),
+      ),
     );
   }
 }
