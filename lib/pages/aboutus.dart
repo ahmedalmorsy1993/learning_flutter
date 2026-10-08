@@ -27,14 +27,20 @@ class _AboutusState extends State<Aboutus> {
   }
 
   /// Opens a bottom sheet with [items] and writes the picked one into [controller].
-  void _pick(String title, List<String> items, TextEditingController controller) {
+  void _pick(
+    String title,
+    List<String> items,
+    TextEditingController controller,
+  ) {
     DropDownState<String>(
       dropDown: DropDown<String>(
         bottomSheetTitle: Text(
           title,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
-        data: items.map((item) => SelectedListItem<String>(data: item)).toList(),
+        data: items
+            .map((item) => SelectedListItem<String>(data: item))
+            .toList(),
         onSelected: (selected) {
           if (selected.isNotEmpty) {
             setState(() => controller.text = selected.first.data);
@@ -72,6 +78,7 @@ class _AboutusState extends State<Aboutus> {
         ElevatedButton(
           onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
+              backgroundColor: Colors.green,
               content: Text(
                 '${_nameController.text} - ${_cityController.text} - ${_languageController.text}',
               ),
