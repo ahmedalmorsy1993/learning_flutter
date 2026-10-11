@@ -31,7 +31,9 @@ class MainShell extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: tab.title ?? Text(tab.label),
+        title:
+            tab.title ??
+            Text(tab.label, style: TextStyle(fontFamily: "Lumanosimo")),
         centerTitle: true,
         actions: [
           PopupMenuButton(
