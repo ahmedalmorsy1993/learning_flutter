@@ -7,10 +7,35 @@
 
 import 'package:first_app/main.dart';
 import 'package:first_app/pages/home.dart';
+import 'package:first_app/pages/main_shell.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets('Google Maps tab is active on its route', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: MainShell(location: '/google-map', child: const SizedBox()),
+      ),
+    );
+
+    expect(
+      find.descendant(
+        of: find.byType(AppBar),
+        matching: find.text('Google Maps'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      tester
+          .widget<BottomNavigationBar>(find.byType(BottomNavigationBar))
+          .currentIndex,
+      3,
+    );
+  });
+
   testWidgets('selecting Home does not stack another HomePage', (
     WidgetTester tester,
   ) async {

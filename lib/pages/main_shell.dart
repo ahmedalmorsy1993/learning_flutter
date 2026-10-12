@@ -22,11 +22,14 @@ class MainShell extends StatelessWidget {
     _Tab('/', Icons.home, 'Home', _Logo()),
     _Tab('/about', Icons.info, 'About Us'),
     _Tab('/settings', Icons.settings, 'Settings'),
+    _Tab('/google-map', Icons.map, 'Google Maps'),
   ];
 
   @override
   Widget build(BuildContext context) {
-    final index = _tabs.indexWhere((t) => t.path == location).clamp(0, 2);
+    final index = _tabs
+        .indexWhere((t) => t.path == location)
+        .clamp(0, _tabs.length - 1);
     final tab = _tabs[index];
 
     return Scaffold(
