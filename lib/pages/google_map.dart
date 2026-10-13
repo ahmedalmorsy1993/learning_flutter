@@ -14,7 +14,7 @@ class MapSample extends StatefulWidget {
 class MapSampleState extends State<MapSample> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
-
+  late final GoogleMapController _gmc;
   static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 12.4746,
@@ -31,13 +31,30 @@ class MapSampleState extends State<MapSample> {
   };
   @override
   void initState() {
+    CustomGeolocator.determinePosition().then(
+      (position) => {
+        setState(() {
+          markers.add(
+            Marker(
+              markerId: MarkerId('1'),
+              position: LatLng(position.latitude, position.longitude),
+            ),
+          );
+        }),
+      },
+    );
     CustomGeolocator.getPositionStream().listen((position) {
       debugPrint('${position.latitude}, ${position.longitude}');
-      markers.add(
-        Marker(
-          markerId: MarkerId('1'),
-          position: LatLng(position.latitude, position.longitude),
-        ),
+      setState(() {
+        markers.add(
+          Marker(
+            markerId: MarkerId('1'),
+            position: LatLng(position.latitude, position.longitude),
+          ),
+        );
+      });
+      _gmc.animateCamera(
+        CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)),
       );
     });
     super.initState();
@@ -63,6 +80,7 @@ class MapSampleState extends State<MapSample> {
         // markers: ,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
+          _gmc = controller;
         },
       ),
       // floatingActionButton: FloatingActionButton.extended(
