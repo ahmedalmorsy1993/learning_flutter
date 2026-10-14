@@ -1,6 +1,7 @@
 import 'package:first_app/components/back_button.dart';
 import 'package:first_app/components/input_field.dart';
 import 'package:first_app/components/primary_button.dart';
+import 'package:first_app/core/validation/validators.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -30,7 +31,6 @@ class _LoginState extends State<Login> {
           children: [
             Form(
               key: formState,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 20,
@@ -69,11 +69,17 @@ class _LoginState extends State<Login> {
                   ),
                   InputField(
                     label: 'Email',
+                    keyboardType: TextInputType.emailAddress,
+                    validators: [Validators.required(), Validators.email()],
                     decoration: InputDecoration(hintText: 'Enter Your Email'),
                   ),
                   InputField(
                     label: 'Password',
                     obscureText: _obscurePassword,
+                    validators: [
+                      Validators.required(),
+                      Validators.minLength(8),
+                    ],
                     decoration: InputDecoration(
                       hintText: 'Enter Your Password',
                       suffixIcon: _passwordToggle,
@@ -91,7 +97,7 @@ class _LoginState extends State<Login> {
                   ),
                   PrimaryButton(
                     text: 'Login',
-                    onPressed: () {},
+                    onPressed: () => formState.currentState!.validate(),
                     isLoading: false,
                   ),
                 ],

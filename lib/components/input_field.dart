@@ -1,3 +1,4 @@
+import 'package:first_app/core/validation/validators.dart';
 import 'package:flutter/material.dart';
 
 /// Text field with the app's default look.
@@ -11,7 +12,7 @@ class InputField extends StatelessWidget {
     this.label,
     this.controller,
     this.decoration,
-    this.validator,
+    this.validators = const [],
     this.onChanged,
     this.keyboardType,
     this.textInputAction,
@@ -21,7 +22,7 @@ class InputField extends StatelessWidget {
   final String? label;
   final TextEditingController? controller;
   final InputDecoration? decoration;
-  final FormFieldValidator<String>? validator;
+  final List<Validator> validators;
   final ValueChanged<String>? onChanged;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
@@ -46,7 +47,8 @@ class InputField extends StatelessWidget {
   Widget build(BuildContext context) {
     final field = TextFormField(
       controller: controller,
-      validator: validator,
+      validator: Validators.compose(validators),
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       onChanged: onChanged,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
