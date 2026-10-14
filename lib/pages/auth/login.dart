@@ -18,7 +18,24 @@ class _LoginState extends State<Login> {
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [OutlinedBackButton()],
+            spacing: 20,
+            children: [
+              OutlinedBackButton(),
+              Center(
+                child: Container(
+                  width: 150,
+                  height: 150,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    shape: BoxShape.circle,
+                  ),
+                  child: ClipOval(
+                    child: Image.asset('images/ai_me.jpeg', fit: BoxFit.cover),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
