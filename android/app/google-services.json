@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "491998841134",
+    "project_id": "fluttercourse-163cb",
+    "storage_bucket": "fluttercourse-163cb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491998841134:android:c9657c74b0745f0be4d2bf",
+        "android_client_info": {
+          "package_name": "com.example.first_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYv0kaGCG7kP5yB3QKk_FmsKoQ6iSpPsk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
