@@ -1,5 +1,7 @@
 import 'package:first_app/components/products.dart';
 import 'package:first_app/pages/aboutus.dart';
+import 'package:first_app/pages/auth/login.dart';
+import 'package:first_app/pages/auth/signup.dart';
 import 'package:first_app/pages/google_map.dart';
 import 'package:first_app/pages/home_page.dart';
 import 'package:first_app/pages/main_shell.dart';
@@ -13,7 +15,7 @@ final _shellKey = GlobalKey<NavigatorState>();
 
 final appRouter = GoRouter(
   navigatorKey: _rootKey,
-  initialLocation: '/',
+  initialLocation: '/login',
   routes: [
     // Layout route: MainShell renders the shared AppBar + bottom bar and
     // places the matched child page in its body (like <Outlet/> / <slot/>).
@@ -33,6 +35,16 @@ final appRouter = GoRouter(
       path: '/product',
       parentNavigatorKey: _rootKey,
       builder: (_, state) => ProductDetails(product: state.extra! as Product),
+    ),
+    GoRoute(
+      path: '/login',
+      parentNavigatorKey: _rootKey,
+      builder: (_, state) => Login(),
+    ),
+    GoRoute(
+      path: '/signup',
+      parentNavigatorKey: _rootKey,
+      builder: (_, state) => Signup(),
     ),
   ],
 );

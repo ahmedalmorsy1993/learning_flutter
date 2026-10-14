@@ -16,7 +16,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,
-      theme: ThemeData(fontFamily: "Lumanosimo"),
+      theme: ThemeData(
+        fontFamily: "Lumanosimo",
+        actionIconTheme: ActionIconThemeData(
+          backButtonIconBuilder: (context) => const Icon(Icons.chevron_left),
+        ),
+      ),
     );
   }
 }
