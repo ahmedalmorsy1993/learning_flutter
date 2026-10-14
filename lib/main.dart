@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,
       theme: ThemeData(
-        fontFamily: "Lumanosimo",
+        // fontFamily: "Lumanosimo",
         actionIconTheme: ActionIconThemeData(
           backButtonIconBuilder: (context) => const Icon(Icons.chevron_left),
         ),

@@ -1,4 +1,5 @@
 import 'package:first_app/components/back_button.dart';
+import 'package:first_app/components/input_field.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
@@ -9,35 +10,70 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  bool _obscurePassword = true;
+
+  Widget get _passwordToggle => IconButton(
+    onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+    icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
+  );
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(color: Colors.white),
-      padding: EdgeInsets.all(20),
-      child: ListView(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 20,
-            children: [
-              OutlinedBackButton(),
-              Center(
-                child: Container(
-                  width: 150,
-                  height: 150,
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    shape: BoxShape.circle,
-                  ),
-                  child: ClipOval(
-                    child: Image.asset('images/ai_me.jpeg', fit: BoxFit.cover),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 20,
+              children: [
+                OutlinedBackButton(),
+                Center(
+                  child: Container(
+                    width: 150,
+                    height: 150,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      shape: BoxShape.circle,
+                    ),
+                    child: ClipOval(
+                      child: Image.asset(
+                        'images/ai_me.jpeg',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    'Login',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text('Login to continue using the app'),
+                  ),
+                ),
+                InputField(
+                  label: 'Email',
+                  decoration: InputDecoration(hintText: 'Enter Your Email'),
+                ),
+                InputField(
+                  label: 'Password',
+                  obscureText: _obscurePassword,
+                  decoration: InputDecoration(
+                    hintText: 'Enter Your Password',
+                    suffixIcon: _passwordToggle,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
