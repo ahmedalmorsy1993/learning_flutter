@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:first_app/core/network/app_exception.dart';
+import 'package:first_app/core/network/message_interceptor.dart';
 import 'package:flutter/foundation.dart';
 
 /// Thin wrapper around Dio.
@@ -8,18 +9,17 @@ import 'package:flutter/foundation.dart';
 /// the rest of the app only sees the few methods it needs, and every
 /// [DioException] is converted to an [AppException] in one place.
 class ApiClient {
-  ApiClient({
-    Dio? dio,
-    String baseUrl = 'https://jsonplaceholder.typicode.com',
-  }) : _dio =
-           dio ??
-           Dio(
-             BaseOptions(
-               baseUrl: baseUrl,
-               connectTimeout: const Duration(seconds: 10),
-               receiveTimeout: const Duration(seconds: 10),
-             ),
-           ) {
+  ApiClient({Dio? dio, String baseUrl = 'https://jsonplaceholder.typicode.com'})
+    : _dio =
+          dio ??
+          Dio(
+            BaseOptions(
+              baseUrl: baseUrl,
+              connectTimeout: const Duration(seconds: 10),
+              receiveTimeout: const Duration(seconds: 10),
+            ),
+          ) {
+    _dio.interceptors.add(MessageInterceptor());
     if (kDebugMode) {
       _dio.interceptors.add(
         LogInterceptor(logPrint: (line) => debugPrint(line.toString())),
@@ -29,11 +29,40 @@ class ApiClient {
 
   final Dio _dio;
 
-  Future<T> get<T>(String path, {Map<String, dynamic>? query}) =>
-      _send(() => _dio.get<T>(path, queryParameters: query));
+  /// [silent] hides the error SnackBar (e.g. the screen shows its own
+  /// error UI). [successMessage] shows a green SnackBar on success.
+  Future<T> get<T>(
+    String path, {
+    Map<String, dynamic>? query,
+    bool silent = false,
+    String? successMessage,
+  }) => _send(
+    () => _dio.get<T>(
+      path,
+      queryParameters: query,
+      options: _options(silent, successMessage),
+    ),
+  );
 
-  Future<T> post<T>(String path, {Object? body}) =>
-      _send(() => _dio.post<T>(path, data: body));
+  Future<T> post<T>(
+    String path, {
+    Object? body,
+    bool silent = false,
+    String? successMessage,
+  }) => _send(
+    () => _dio.post<T>(
+      path,
+      data: body,
+      options: _options(silent, successMessage),
+    ),
+  );
+
+  Options _options(bool silent, String? successMessage) => Options(
+    extra: {
+      MessageInterceptor.silent: silent,
+      MessageInterceptor.successMessage: ?successMessage,
+    },
+  );
 
   Future<T> _send<T>(Future<Response<T>> Function() request) async {
     try {

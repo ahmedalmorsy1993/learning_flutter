@@ -16,9 +16,8 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  late final _controller = BlogsController(
-    widget.repository ?? blogRepository,
-  )..load();
+  late final _controller = BlogsController(widget.repository ?? blogRepository)
+    ..load();
 
   @override
   void dispose() {
@@ -68,11 +67,7 @@ class _BlogTile extends StatelessWidget {
           blog.title,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text(
-          blog.body,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
+        subtitle: Text(blog.body, maxLines: 2, overflow: TextOverflow.ellipsis),
       ),
     );
   }

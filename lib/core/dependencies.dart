@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_app/core/network/api_client.dart';
+import 'package:first_app/features/auth/data/auth_repository.dart';
 import 'package:first_app/features/blogs/data/blog_repository.dart';
 
 // Composition root: the one place that decides which implementations the app
@@ -8,3 +10,7 @@ import 'package:first_app/features/blogs/data/blog_repository.dart';
 final apiClient = ApiClient();
 
 final BlogRepository blogRepository = ApiBlogRepository(apiClient);
+
+final AuthRepository authRepository = FirebaseAuthRepository(
+  FirebaseAuth.instance,
+);

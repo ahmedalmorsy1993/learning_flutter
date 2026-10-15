@@ -1,41 +1,70 @@
 import 'package:first_app/components/back_button.dart';
 import 'package:first_app/components/input_field.dart';
 import 'package:first_app/components/primary_button.dart';
+import 'package:first_app/core/dependencies.dart';
+import 'package:first_app/core/ui/app_messenger.dart';
 import 'package:first_app/core/validation/validators.dart';
+import 'package:first_app/features/auth/data/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class Login extends StatefulWidget {
-  const new({super.key});
+  /// Tests can pass a fake [repository];
+  /// the app uses the real one from `dependencies.dart`.
+  const new({super.key, this.repository});
+
+  final AuthRepository? repository;
 
   @override
   State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
+  final _formKey = GlobalKey<FormState>();
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+  late final _auth = widget.repository ?? authRepository;
   bool _obscurePassword = true;
-  GlobalKey<FormState> formState = GlobalKey();
-  Widget get _passwordToggle => IconButton(
-    onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-    icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
-  );
+  bool _loading = false;
+
+  @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _loading = true);
+    try {
+      await _auth.signIn(email: _email.text.trim(), password: _password.text);
+      if (mounted) context.go('/');
+    } on AuthException catch (e) {
+      AppMessenger.error(e.message);
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: ListView(
-          shrinkWrap: true,
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
-          children: [
-            Form(
-              key: formState,
+          child: Form(
+            key: _formKey,
+            child: AutofillGroup(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 20,
                 children: [
-                  OutlinedBackButton(),
+                  const OutlinedBackButton(),
                   Center(
                     child: Container(
                       width: 150,
@@ -53,42 +82,63 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                   ),
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      'Login',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 8,
+                    children: [
+                      Text(
+                        'Login',
+                        style: textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Text('Login to continue using the app'),
-                    ),
+                      Text(
+                        'Login to continue using the app',
+                        style: textTheme.bodyMedium,
+                      ),
+                    ],
                   ),
                   InputField(
                     label: 'Email',
+                    controller: _email,
                     keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    autofillHints: const [AutofillHints.email],
                     validators: [Validators.required(), Validators.email()],
-                    decoration: InputDecoration(hintText: 'Enter Your Email'),
+                    decoration: const InputDecoration(
+                      hintText: 'Enter Your Email',
+                    ),
                   ),
                   InputField(
                     label: 'Password',
+                    controller: _password,
                     obscureText: _obscurePassword,
+                    textInputAction: TextInputAction.done,
+                    autofillHints: const [AutofillHints.password],
+                    onFieldSubmitted: (_) => _submit(),
                     validators: [
                       Validators.required(),
                       Validators.minLength(8),
                     ],
                     decoration: InputDecoration(
                       hintText: 'Enter Your Password',
-                      suffixIcon: _passwordToggle,
+                      suffixIcon: IconButton(
+                        onPressed: () => setState(
+                          () => _obscurePassword = !_obscurePassword,
+                        ),
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                      ),
                     ),
                   ),
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () => context.go('/signup'),
+                      // TODO: point to the forgot-password page once it exists.
+                      onPressed: () {},
                       child: Text(
                         'Forgot your password?',
                         style: TextStyle(color: Colors.grey[700]),
@@ -97,13 +147,13 @@ class _LoginState extends State<Login> {
                   ),
                   PrimaryButton(
                     text: 'Login',
-                    onPressed: () => formState.currentState!.validate(),
-                    isLoading: false,
+                    onPressed: _submit,
+                    isLoading: _loading,
                   ),
                 ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:first_app/core/ui/app_messenger.dart';
 import 'package:first_app/router.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,
+      scaffoldMessengerKey: messengerKey,
       theme: ThemeData(
         // fontFamily: "Lumanosimo",
         actionIconTheme: ActionIconThemeData(

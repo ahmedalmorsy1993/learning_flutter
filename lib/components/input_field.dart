@@ -14,6 +14,8 @@ class InputField extends StatelessWidget {
     this.decoration,
     this.validators = const [],
     this.onChanged,
+    this.onFieldSubmitted,
+    this.autofillHints,
     this.keyboardType,
     this.textInputAction,
     this.obscureText = false,
@@ -24,6 +26,8 @@ class InputField extends StatelessWidget {
   final InputDecoration? decoration;
   final List<Validator> validators;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onFieldSubmitted;
+  final Iterable<String>? autofillHints;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final bool obscureText;
@@ -50,6 +54,8 @@ class InputField extends StatelessWidget {
       validator: Validators.compose(validators),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       onChanged: onChanged,
+      onFieldSubmitted: onFieldSubmitted,
+      autofillHints: autofillHints,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
       obscureText: obscureText,

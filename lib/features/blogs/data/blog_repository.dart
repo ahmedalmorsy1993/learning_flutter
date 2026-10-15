@@ -15,7 +15,10 @@ class ApiBlogRepository implements BlogRepository {
 
   @override
   Future<List<Blog>> fetchAll() async {
-    final json = await _api.get<List<dynamic>>('/posts');
+    final json = await _api.get<List<dynamic>>(
+      '/posts',
+      silent: true, // the screen shows its own error + Retry
+    );
     return json
         .map((item) => Blog.fromJson(item as Map<String, dynamic>))
         .toList();
