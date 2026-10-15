@@ -1,3 +1,4 @@
+import 'package:first_app/core/dependencies.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -51,6 +52,12 @@ class MainShell extends StatelessWidget {
               showSearch(context: context, delegate: _CustomSearch()),
             },
             icon: Icon(Icons.search, size: 30),
+          ),
+          IconButton(
+            tooltip: 'Log out',
+            // The router's redirect sends the user to /login.
+            onPressed: authRepository.signOut,
+            icon: const Icon(Icons.logout),
           ),
         ],
       ),

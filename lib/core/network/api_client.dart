@@ -9,16 +9,34 @@ import 'package:flutter/foundation.dart';
 /// the rest of the app only sees the few methods it needs, and every
 /// [DioException] is converted to an [AppException] in one place.
 class ApiClient {
-  ApiClient({Dio? dio, String baseUrl = 'https://jsonplaceholder.typicode.com'})
-    : _dio =
-          dio ??
-          Dio(
-            BaseOptions(
-              baseUrl: baseUrl,
-              connectTimeout: const Duration(seconds: 10),
-              receiveTimeout: const Duration(seconds: 10),
-            ),
-          ) {
+  /// [token] is called before every request; when it returns a value it's
+  /// sent as `Authorization: Bearer <token>`.
+  ApiClient({
+    Dio? dio,
+    String baseUrl = 'https://jsonplaceholder.typicode.com',
+    Future<String?> Function()? token,
+  }) : _dio =
+           dio ??
+           Dio(
+             BaseOptions(
+               baseUrl: baseUrl,
+               connectTimeout: const Duration(seconds: 10),
+               receiveTimeout: const Duration(seconds: 10),
+             ),
+           ) {
+    if (token != null) {
+      _dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) async {
+            final value = await token();
+            if (value != null) {
+              options.headers['Authorization'] = 'Bearer $value';
+            }
+            handler.next(options);
+          },
+        ),
+      );
+    }
     _dio.interceptors.add(MessageInterceptor());
     if (kDebugMode) {
       _dio.interceptors.add(
