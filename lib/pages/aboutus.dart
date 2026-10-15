@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:first_app/components/app_text_field.dart';
@@ -94,7 +96,25 @@ class _AboutusState extends State<Aboutus> {
           ),
           child: const Text('Save'),
         ),
+        ElevatedButton(
+          onPressed: () async {
+            final receivePort = ReceivePort();
+            await Isolate.spawn(complexTask, receivePort.sendPort);
+            receivePort.listen((total) {
+              debugPrint("result: $total");
+            });
+          },
+          child: Text('run complex task'),
+        ),
       ],
     );
   }
+}
+
+void complexTask(SendPort sendPort) {
+  int total = 0;
+  for (var i = 0; i < 100000; i++) {
+    total += i;
+  }
+  sendPort.send(total);
 }
