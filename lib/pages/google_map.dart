@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:first_app/geo_locator.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapSample extends StatefulWidget {
@@ -14,7 +15,6 @@ class MapSample extends StatefulWidget {
 class MapSampleState extends State<MapSample> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
-  late final GoogleMapController _gmc;
   static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 12.4746,
@@ -29,35 +29,42 @@ class MapSampleState extends State<MapSample> {
   Set<Marker> markers = {
     Marker(markerId: const MarkerId('1'), position: _kLake.target),
   };
+  StreamSubscription<Position>? _positionSub;
   @override
   void initState() {
-    CustomGeolocator.determinePosition().then(
-      (position) => {
-        setState(() {
-          markers.add(
-            Marker(
-              markerId: MarkerId('1'),
-              position: LatLng(position.latitude, position.longitude),
-            ),
-          );
-        }),
-      },
-    );
-    CustomGeolocator.getPositionStream().listen((position) {
-      debugPrint('${position.latitude}, ${position.longitude}');
-      setState(() {
-        markers.add(
-          Marker(
-            markerId: MarkerId('1'),
-            position: LatLng(position.latitude, position.longitude),
-          ),
-        );
-      });
-      _gmc.animateCamera(
+    super.initState();
+    CustomGeolocator.determinePosition().then((position) {
+      if (mounted) _moveMarker(position);
+    });
+    _positionSub = CustomGeolocator.getPositionStream().listen((
+      position,
+    ) async {
+      if (!mounted) return;
+      _moveMarker(position);
+      final controller = await _controller.future;
+      controller.animateCamera(
         CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)),
       );
     });
-    super.initState();
+  }
+
+  // Replace the marker instead of adding: Marker equality includes position,
+  // so `add` kept growing the set with every location update.
+  void _moveMarker(Position position) {
+    setState(() {
+      markers = {
+        Marker(
+          markerId: const MarkerId('1'),
+          position: LatLng(position.latitude, position.longitude),
+        ),
+      };
+    });
+  }
+
+  @override
+  void dispose() {
+    _positionSub?.cancel();
+    super.dispose();
   }
 
   @override
@@ -80,7 +87,6 @@ class MapSampleState extends State<MapSample> {
         // markers: ,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
-          _gmc = controller;
         },
       ),
       // floatingActionButton: FloatingActionButton.extended(
