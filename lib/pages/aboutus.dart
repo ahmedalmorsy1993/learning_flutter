@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:isolate';
 
 import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:first_app/components/app_text_field.dart';
 import 'package:first_app/components/custom_dropdown_list.dart';
+import 'package:first_app/timer_info.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Aboutus extends StatefulWidget {
   const Aboutus({super.key});
@@ -14,6 +17,7 @@ class Aboutus extends StatefulWidget {
 }
 
 class _AboutusState extends State<Aboutus> {
+  Timer? _countdownTimer;
   final _nameController = TextEditingController();
   final _cityController = TextEditingController();
   final _languageController = TextEditingController();
@@ -24,10 +28,27 @@ class _AboutusState extends State<Aboutus> {
 
   @override
   void dispose() {
+    _countdownTimer?.cancel();
     _nameController.dispose();
     _cityController.dispose();
     _languageController.dispose();
+    _namesController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final timerInfo = context.read<TimerInfo>();
+      timerInfo.updateRemainingTime();
+      if (timerInfo.remainingTime == 0) return;
+      _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        timerInfo.updateRemainingTime();
+        if (timerInfo.remainingTime == 0) timer.cancel();
+      });
+    });
   }
 
   /// Opens a bottom sheet with [items] and writes the picked one into [controller].
@@ -105,6 +126,14 @@ class _AboutusState extends State<Aboutus> {
             });
           },
           child: Text('run complex task'),
+        ),
+        Consumer<TimerInfo>(
+          builder: (context, timerInfo, child) => Center(
+            child: Text(
+              timerInfo.remainingTime.toString(),
+              style: TextStyle(fontSize: 40),
+            ),
+          ),
         ),
       ],
     );
